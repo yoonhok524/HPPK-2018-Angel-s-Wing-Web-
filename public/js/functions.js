@@ -147,9 +147,9 @@ function getLocation(part) {
         return "판매 지역: P"
         case "파트-최준영":
         return "판매 지역: Q"
+        default:
+        return "판매 지역: All"
     }
-
-    return "판매 지역: unknown"
 }
 
 function showProductDetails(product) {
@@ -471,7 +471,7 @@ function onChangedLab() {
         part4.value = "파트-최준영";
         part4.innerText = "파트-최준영"
         selectPart.appendChild(part4);
-    } else {
+    } else if (lab == "그룹") {
         var part1 = document.createElement("option");
         part1.value = "파트-심인보";
         part1.innerText = "파트-심인보"
@@ -486,5 +486,10 @@ function onChangedLab() {
         part3.value = "파트-System Architect";
         part3.innerText = "파트-System Architect"
         selectPart.appendChild(part3);
+    } else {
+        var part4 = document.createElement("option");
+        part4.value = "All";
+        part4.innerText = "All"
+        selectPart.appendChild(part4);
     }
 }
