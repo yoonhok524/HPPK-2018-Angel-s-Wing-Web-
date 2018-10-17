@@ -157,6 +157,9 @@ function showProductDetails(product) {
 
     $('#product-name').val(product.name);
     $('#product-price').val(product.price);
+    if (product.donation) {
+        $('#donation').val(product.donation)
+    }
     $('#seller-name').val(product.seller.name);
     $('#selectLab').val(product.seller.lab);
     onChangedLab();
@@ -171,6 +174,7 @@ function openAddModal() {
 
     $('#product-name').val("");
     $('#product-price').val("");
+    $('#donation').val("0");
     $('#seller-name').val("");
     $('#selectLab').val("1랩");
     $('#selectPart').val("파트-하우화");
@@ -188,6 +192,7 @@ function addProductWithPhoto() {
     var photoFile = $('#productPhoto').get(0).files[0];
     var productName = document.getElementById("product-name").value;
     var productPrice = document.getElementById("product-price").value;
+    var donation= document.getElementById('donation').value;
     var sellerName = document.getElementById("seller-name").value;
     var sellerLab = document.getElementById("selectLab").value;
     var sellerPart = document.getElementById("selectPart").value;
@@ -206,6 +211,7 @@ function addProductWithPhoto() {
                 name: productName,
                 onSale: true,
                 price: parseInt(productPrice),
+                donation: parseInt(donation),
                 seller: {
                     lab: sellerLab,
                     part: sellerPart,
@@ -229,6 +235,7 @@ function addProduct() {
     
     var productName = document.getElementById("product-name").value;
     var productPrice = document.getElementById("product-price").value;
+    var donation = document.getElementById("donation").value;
     var sellerName = document.getElementById("seller-name").value;
     var sellerLab = document.getElementById("selectLab").value;
     var sellerPart = document.getElementById("selectPart").value;
@@ -244,6 +251,7 @@ function addProduct() {
                 name: productName,
                 onSale: true,
                 price: parseInt(productPrice),
+                donation: parseInt(donation),
                 seller: {
                     lab: sellerLab,
                     part: sellerPart,
@@ -266,6 +274,7 @@ function editProduct() {
 
     var productName = document.getElementById("product-name").value;
     var productPrice = document.getElementById("product-price").value;
+    var donation = document.getElementById("donation").value;
     var sellerName = document.getElementById("seller-name").value;
     var sellerLab = document.getElementById("selectLab").value;
     var sellerPart = document.getElementById("selectPart").value;
@@ -278,6 +287,7 @@ function editProduct() {
             name: productName,
             onSale: isOnSales,
             price: parseInt(productPrice),
+            donation: parseInt(donation),
             seller: {
                 lab: sellerLab,
                 part: sellerPart,
@@ -302,6 +312,7 @@ function editProductWithPhoto() {
 
     var productName = document.getElementById("product-name").value;
     var productPrice = document.getElementById("product-price").value;
+    var donation = document.getElementById("donation").value;
     var sellerName = document.getElementById("seller-name").value;
     var sellerLab = document.getElementById("selectLab").value;
     var sellerPart = document.getElementById("selectPart").value;
@@ -319,6 +330,7 @@ function editProductWithPhoto() {
                     name: productName,
                     onSale: isOnSales,
                     price: parseInt(productPrice),
+                    donation: parseInt(donation),
                     seller: {
                         lab: sellerLab,
                         part: sellerPart,
@@ -367,17 +379,29 @@ function deleteProduct() {
             if (doc.exists) {
                 const product = doc.data();
                 const filename = product.imgFileName;
-                storage.ref(filename).delete().then(function () {
+                if (filename != "ic_unknown.png") {
+                    storage.ref(filename).delete().then(function () {
+                        firestore.collection("products")
+                            .doc(productId)
+                            .delete().then(function () {
+                                console.log("[HPPK] deleteProduct - Document successfully deleted!");
+                                $('#registerProductModal').modal('hide');
+                                getProducts();
+                            }).catch(function (error) {
+                                console.error("[HPPK] deleteProduct -Error removing document: ", error);
+                            });
+                    });
+                } else {
                     firestore.collection("products")
-                        .doc(productId)
-                        .delete().then(function () {
-                            console.log("[HPPK] deleteProduct - Document successfully deleted!");
-                            $('#registerProductModal').modal('hide');
-                            getProducts();
-                        }).catch(function (error) {
-                            console.error("[HPPK] deleteProduct -Error removing document: ", error);
-                        });
-                });
+                    .doc(productId)
+                    .delete().then(function () {
+                        console.log("[HPPK] deleteProduct - Document successfully deleted!");
+                        $('#registerProductModal').modal('hide');
+                        getProducts();
+                    }).catch(function (error) {
+                        console.error("[HPPK] deleteProduct -Error removing document: ", error);
+                    });
+                }
             } else {
                 alert("Failed - The product already removed.");
             }

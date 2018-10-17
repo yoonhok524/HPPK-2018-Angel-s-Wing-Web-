@@ -182,3 +182,18 @@ input:checked + .slider:before {
   bottom: 0;
   margin: 24px;
 }
+
+.product {
+  width: 100%;
+}
+
+.tf  {
+  width: 16%;
+  display: inline-block;
+  text-align: center;
+}
+
+.div-product {
+  margin-top: 8px;
+  border-top: 1px dotted #2196F3;
+}

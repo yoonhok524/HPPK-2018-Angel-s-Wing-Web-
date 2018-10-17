@@ -16,6 +16,7 @@
 </head>
 
 <body>
+  
   <!-- 1. header title -->
   <header id="header_main">
     <div id="header_title" class="jumbotron jumbotron-fluid">
@@ -36,8 +37,9 @@
           <img style="width:300px;display: block;
           padding-top:128px;
         margin-left: auto;
-        margin-right: auto;"
-            alt='다운로드하기 Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/ko_badge_web_generic.png' /></a>
+        margin-right: auto;" alt='다운로드하기 Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/ko_badge_web_generic.png'
+          />
+        </a>
       </div>
     </div>
   </section>
@@ -74,7 +76,9 @@
   <!-- 4.1 Event Details - Cloth Donation -->
   <div class="jumbotron jumbotron-fluid" style="margin-bottom: 0; background-color: white">
     <div class="container">
-      <h3><span class="badge badge-pill badge-success">Event 1</span></h3>
+      <h3>
+        <span class="badge badge-pill badge-success">Event 1</span>
+      </h3>
       <h1 class="display-6">의류 기부 행사</h1>
       <img src="https://firebasestorage.googleapis.com/v0/b/hppk-2018-angel-s-wing.appspot.com/o/res%2Fdonation_cloth_condition.jpg?alt=media&token=0bd4b361-d630-44a7-bec0-2292fac5e5d5"
         style="max-width: 100%; width /***/: auto; height: auto;">
@@ -90,7 +94,9 @@
   <!-- 4.2 Event Details - Flea Market -->
   <div class="jumbotron jumbotron-fluid" style="margin-bottom: 0; background-color: #f8f9fa!important;">
     <div class="container">
-      <h3><span class="badge badge-pill badge-success">Event 2</span></h3>
+      <h3>
+        <span class="badge badge-pill badge-success">Event 2</span>
+      </h3>
       <h1 class="display-6">자선 바자회</h1>
       <img src="https://firebasestorage.googleapis.com/v0/b/hppk-2018-angel-s-wing.appspot.com/o/res%2Fbooth_location.png?alt=media&token=086225b6-9a54-4463-a1e9-ffb70f5736d5">
       <p class="lead">
@@ -119,8 +125,7 @@
 
 
   <!-- Add Edit Product Modal -->
-  <div class="modal fade" id="registerProductModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
+  <div class="modal fade" id="registerProductModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -147,6 +152,11 @@
             <div class="form-group">
               <label for="product-price" class="col-form-label">판매 가격:</label>
               <input type="number" class="form-control" id="product-price">
+            </div>
+            <!-- 4. Donation -->
+            <div class="form-group">
+              <label for="donation" class="col-form-label">기부 금액:</label>
+              <input type="number" class="form-control" id="donation">
             </div>
 
             <!-- Seller -->
@@ -204,6 +214,8 @@
     </div>
   </div>
 
+  <a href="./tf.html">TF Only</a>
+  
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
     crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
