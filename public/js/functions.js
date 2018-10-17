@@ -123,7 +123,6 @@ function drawTop3SalesChart(productList) {
     var salesList = []
     productList.forEach((product) => {
         // if (!product.onSale) {
-            
             var part = product.seller.part
             var p = salesList.find(element => {
                 return element.part == part
@@ -141,14 +140,17 @@ function drawTop3SalesChart(productList) {
         return b.count - a.count
     }).slice(0, 3)
 
+    const labelArr = top3.map(value => value.part)
+    const countArr = top3.map(value => value.count)
+    
     var ctx = document.getElementById("top3Donation").getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: ["Red", "Green", "Blue"],
+            labels: labelArr,
             datasets: [{
-                label: '# of Votes',
-                data: [12, 19, 3, 5, 2, 3],
+                label: '등록된 물품 수 Top 3',
+                data: countArr,
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(75, 192, 192, 0.2)',
