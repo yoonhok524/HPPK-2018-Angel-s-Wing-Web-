@@ -94,7 +94,10 @@ function getProducts(part) {
 }
 
 function saveProduct(productId, price, donation) {
-    console.log(productId + " - " + price + " / " + donation);
+    if (!donation || donation < 0) {
+        alert("기부 금액을 입력해주세요.");
+        return;
+    }
 
     firestore.collection("products")
         .doc(productId).set({
