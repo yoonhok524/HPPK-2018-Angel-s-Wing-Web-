@@ -159,6 +159,8 @@ function showProductDetails(product) {
     $('#product-price').val(product.price);
     if (product.donation) {
         $('#donation').val(product.donation)
+    } else {
+        $('#donation').val(parseInt(product.price * 0.4))
     }
     $('#seller-name').val(product.seller.name);
     $('#selectLab').val(product.seller.lab);
@@ -173,7 +175,7 @@ function openAddModal() {
     $('#registerProductModal').modal('show');
 
     $('#product-name').val("");
-    $('#product-price').val("");
+    $('#product-price').val("0");
     $('#donation').val("0");
     $('#seller-name').val("");
     $('#selectLab').val("1랩");
