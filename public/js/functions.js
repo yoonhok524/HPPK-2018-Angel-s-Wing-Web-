@@ -22,11 +22,13 @@ function getProducts() {
     var root = document.getElementById("product_container");
     removeAllChild(root);
 
+    var productList = [];
     firestore.collection("products").orderBy("createdAt", "desc").get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
             // console.log(`${doc.id} => ${JSON.stringify(doc.data())}`);
 
             const product = doc.data();
+            productList.push(product);
 
             var productImg = document.createElement("img");
             if (product.imgFileName == "ic_unknown.png") {
@@ -108,47 +110,126 @@ function getProducts() {
                 }
             });
         });
+
+        drawTop3SalesChart(productList);
+        drawTop3DonationChart(productList);
+
+    });
+
+
+}
+
+function drawTop3SalesChart(productList) {
+    var salesList = []
+    productList.forEach((product) => {
+        // if (!product.onSale) {
+            
+            var part = product.seller.part
+            var p = salesList.find(element => {
+                return element.part == part
+            })
+
+            if (p === undefined) {
+                salesList.push({part: part, count: 1})
+            } else {
+                p.count++;
+            }
+        // }
+    })
+
+    const top3 = salesList.sort((a, b) => {
+        return b.count - a.count
+    }).slice(0, 3)
+
+    var ctx = document.getElementById("top3Donation").getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ["Red", "Green", "Blue"],
+            datasets: [{
+                label: '# of Votes',
+                data: [12, 19, 3, 5, 2, 3],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(54, 162, 235, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255,99,132,1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(54, 162, 235, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: false,
+            maintainAspectRatio: false,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
     });
 }
+
+function drawTop3DonationChart(productList) {
+    // var productMap = {}
+    // productList.forEach((product) => {
+    //     const part = product.seller.part
+    //     if (productMap[part] === undefined) {
+    //         productMap[part] = 1;
+    //     } else {
+    //         productMap[part] += 1;
+    //     }
+    // })
+
+    // console.log(JSON.stringify(productMap));
+}
+
+
 
 function getLocation(part) {
     switch (part) {
         case "파트-이근철":
-        return "판매 지역: A"
+            return "판매 지역: A"
         case "파트-이기창":
-        return "판매 지역: B"
+            return "판매 지역: B"
         case "파트-허남":
-        return "판매 지역: C"
+            return "판매 지역: C"
         case "파트-하우화":
-        return "판매 지역: D"
+            return "판매 지역: D"
         case "파트-조태균":
-        return "판매 지역: E"
+            return "판매 지역: E"
         case "파트-이중목":
-        return "판매 지역: F"
+            return "판매 지역: F"
         case "파트-김행난":
-        return "판매 지역: G"
+            return "판매 지역: G"
         case "파트-강형종":
-        return "판매 지역: H"
+            return "판매 지역: H"
         case "파트-채수경":
-        return "판매 지역: I"
+            return "판매 지역: I"
         case "파트-김수동":
-        return "판매 지역: J"
+            return "판매 지역: J"
         case "파트-도대회":
-        return "판매 지역: K"
+            return "판매 지역: K"
         case "파트-김병유":
-        return "판매 지역: L"
+            return "판매 지역: L"
         case "파트-권용찬":
-        return "판매 지역: M"
+            return "판매 지역: M"
         case "파트-Mohamad":
-        return "판매 지역: N"
+            return "판매 지역: N"
         case "파트-심인보":
-        return "판매 지역: O"
+            return "판매 지역: O"
         case "파트-System Architect":
-        return "판매 지역: P"
+            return "판매 지역: P"
         case "파트-최준영":
-        return "판매 지역: Q"
+            return "판매 지역: Q"
         default:
-        return "판매 지역: All"
+            return "판매 지역: All"
     }
 }
 
@@ -182,7 +263,7 @@ function openAddModal() {
     $('#selectPart').val("파트-하우화");
     $('#productId').val("");
     $('#isOnSales').attr('checked', product.onSale);
-    
+
     $('#btnDeleteProduct').css('visibility', 'hidden');
 }
 
@@ -194,7 +275,7 @@ function addProductWithPhoto() {
     var photoFile = $('#productPhoto').get(0).files[0];
     var productName = document.getElementById("product-name").value;
     var productPrice = document.getElementById("product-price").value;
-    var donation= document.getElementById('donation').value;
+    var donation = document.getElementById('donation').value;
     var sellerName = document.getElementById("seller-name").value;
     var sellerLab = document.getElementById("selectLab").value;
     var sellerPart = document.getElementById("selectPart").value;
@@ -234,7 +315,7 @@ function addProductWithPhoto() {
 
 function addProduct() {
     console.log("[HPPK] addProduct");
-    
+
     var productName = document.getElementById("product-name").value;
     var productPrice = document.getElementById("product-price").value;
     var donation = document.getElementById("donation").value;
@@ -246,29 +327,29 @@ function addProduct() {
     const productId = sellerName + "_" + createdAt;
 
     firestore.collection("products")
-            .doc(productId).set({
-                id: productId,
-                createdAt: createdAt,
-                imgFileName: "ic_unknown.png",
-                name: productName,
-                onSale: true,
-                price: parseInt(productPrice),
-                donation: parseInt(donation),
-                seller: {
-                    lab: sellerLab,
-                    part: sellerPart,
-                    name: sellerName
-                }
-            })
-            .then(function () {
-                console.log("[HPPK] addProduct - Document successfully written!");
-                $('#registerProductModal').modal('hide');
-                getProducts();
-            })
-            .catch(function (error) {
-                console.error("[HPPK] addProduct - Error writing document: ", error);
-                alert("Failed: " + error);
-            });
+        .doc(productId).set({
+            id: productId,
+            createdAt: createdAt,
+            imgFileName: "ic_unknown.png",
+            name: productName,
+            onSale: true,
+            price: parseInt(productPrice),
+            donation: parseInt(donation),
+            seller: {
+                lab: sellerLab,
+                part: sellerPart,
+                name: sellerName
+            }
+        })
+        .then(function () {
+            console.log("[HPPK] addProduct - Document successfully written!");
+            $('#registerProductModal').modal('hide');
+            getProducts();
+        })
+        .catch(function (error) {
+            console.error("[HPPK] addProduct - Error writing document: ", error);
+            alert("Failed: " + error);
+        });
 }
 
 function editProduct() {
@@ -395,14 +476,14 @@ function deleteProduct() {
                     });
                 } else {
                     firestore.collection("products")
-                    .doc(productId)
-                    .delete().then(function () {
-                        console.log("[HPPK] deleteProduct - Document successfully deleted!");
-                        $('#registerProductModal').modal('hide');
-                        getProducts();
-                    }).catch(function (error) {
-                        console.error("[HPPK] deleteProduct -Error removing document: ", error);
-                    });
+                        .doc(productId)
+                        .delete().then(function () {
+                            console.log("[HPPK] deleteProduct - Document successfully deleted!");
+                            $('#registerProductModal').modal('hide');
+                            getProducts();
+                        }).catch(function (error) {
+                            console.error("[HPPK] deleteProduct -Error removing document: ", error);
+                        });
                 }
             } else {
                 alert("Failed - The product already removed.");

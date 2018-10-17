@@ -61,8 +61,10 @@ function getProducts(part) {
             var donation = product.donation;
             if (!donation) {
                 donation = parseInt(product.price * 0.4)
+                divDonation.setAttribute("placeholder", donation);
+            } else {
+                divDonation.setAttribute("value", donation);
             }
-            divDonation.setAttribute("value", donation);
 
             var divSoldout = document.createElement("input")
             divSoldout.classList.add('tf');

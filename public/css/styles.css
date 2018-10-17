@@ -197,3 +197,7 @@ input:checked + .slider:before {
   margin-top: 8px;
   border-top: 1px dotted #2196F3;
 }
+
+canvas{
+  
+}
