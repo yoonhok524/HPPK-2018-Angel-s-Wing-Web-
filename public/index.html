@@ -38,8 +38,8 @@
           <img style="width:300px;display: block;
           padding-top:128px;
         margin-left: auto;
-        margin-right: auto;" alt='다운로드하기 Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/ko_badge_web_generic.png'
-          />
+        margin-right: auto;"
+            alt='다운로드하기 Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/ko_badge_web_generic.png' />
         </a>
       </div>
     </div>
@@ -97,25 +97,37 @@
         <span class="badge badge-pill badge-success">Event 2</span>
       </h3>
       <h1 class="display-6">자선 바자회</h1>
-      <img src="https://firebasestorage.googleapis.com/v0/b/hppk-2018-angel-s-wing.appspot.com/o/res%2Fbooth_location.png?alt=media&token=086225b6-9a54-4463-a1e9-ffb70f5736d5">
+      <img src="https://firebasestorage.googleapis.com/v0/b/hppk-2018-angel-s-wing.appspot.com/o/res%2Fbooth_location.png?alt=media&token=086225b6-9a54-4463-a1e9-ffb70f5736d5" style="object-fit: cover; max-width: 100%;">
       <p class="lead">
         <ul>
           <li>물품 판매 (40% up 수익금 기부)</li>
           <li>기부 물품 구매</li>
           <li>자선 단체 기부</li>
         </ul>
-
-        <canvas id="top3Donation" style="width: 400px; height: 400px"></canvas>
-
-        <button class="btn btn-primary" type="button" style="float: right;" data-toggle="modal" data-target="#registerProductModal"
-          onclick="openAddModal()">물품 등록</button>
       </p>
     </div>
   </div>
 
+  <div class="jumbotron jumbotron-fluid" style="width:100%; height: 172px;">
+    <div class="container">
+      <h1 class="display-5" id="productSize" style="text-align: center"></h1>
+    </div>
+  </div>
+
+  <div class="container">
+    <canvas id="productRegisterChart" style="width: 100%; height: 512px; display: block; margin-top: 64px;"></canvas>
+    <canvas id="top3Sales" style="display: inline-block; margin-top: 64px; max-width: 49%; width: 800px; height: 256px;"></canvas>
+    <canvas id="top3Donation" style="display: inline-block; margin-top: 64px; max-width: 49%; width: 800px; height: 256px;"></canvas>
+  </div>
+
+
   <!-- 5. Products -->
   <div class="album py-5 bg-light" style="padding-top: 0; padding-bottom: 0">
     <div class="container">
+      <p>
+        <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#registerProductModal" onclick="openAddModal()">물품
+          등록</button>
+      </p>
       <div id="product_container" class="row">
       </div>
     </div>
@@ -125,7 +137,8 @@
 
 
   <!-- Add Edit Product Modal -->
-  <div class="modal fade" id="registerProductModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="registerProductModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">

@@ -111,29 +111,100 @@ function getProducts() {
             });
         });
 
+        $('#productSize').text("총 "+productList.length+"개의 물품이 등록되었습니다!");
+        drawProductRegisterChart(productList);
         drawTop3SalesChart(productList);
         drawTop3DonationChart(productList);
-
     });
+}
 
+function drawProductRegisterChart(productList) {
+    var salesList = []
+    productList.forEach((product) => {
+        var part = product.seller.part
+        var p = salesList.find(element => {
+            return element.part == part
+        })
 
+        if (p === undefined) {
+            salesList.push({ part: part, count: 1 })
+        } else {
+            p.count++;
+        }
+    })
+
+    salesList.sort((a, b) => {
+        if (a.part < b.part)
+            return -1;
+        if (a.part > b.part)
+            return 1;
+        return 0;
+    })
+
+    const labelArr = salesList.map(value => value.part)
+    const countArr = salesList.map(value => value.count)
+
+    var ctx = document.getElementById("productRegisterChart").getContext('2d');
+    new Chart(ctx, {
+        type: 'horizontalBar',
+        data: {
+            labels: labelArr,
+            datasets: [{
+                label: '물품 등록 현황',
+                data: countArr,
+                backgroundColor: [
+                    '#d50000',
+                    '#c51162',
+                    '#aa00ff',
+                    '#512da8',
+                    '#303f9f',
+                    '#1976d2',
+                    '#0288d1',
+                    '#0097a7',
+                    '#00796b',
+                    '#388e3c',
+                    '#64dd17',
+                    '#aeea00',
+                    '#ffd600',
+                    '#ffab00',
+                    '#f57c00',
+                    '#e64a19',
+                    '#795548',
+                    '#9e9e9e',
+                    '#607d8b'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: false,
+            maintainAspectRatio: false,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
 }
 
 function drawTop3SalesChart(productList) {
     var salesList = []
     productList.forEach((product) => {
-        // if (!product.onSale) {
+        if (!product.onSale) {
             var part = product.seller.part
             var p = salesList.find(element => {
                 return element.part == part
             })
 
             if (p === undefined) {
-                salesList.push({part: part, count: 1})
+                salesList.push({ part: part, count: 1 })
             } else {
                 p.count++;
             }
-        // }
+        }
     })
 
     const top3 = salesList.sort((a, b) => {
@@ -142,14 +213,14 @@ function drawTop3SalesChart(productList) {
 
     const labelArr = top3.map(value => value.part)
     const countArr = top3.map(value => value.count)
-    
-    var ctx = document.getElementById("top3Donation").getContext('2d');
-    var myChart = new Chart(ctx, {
+
+    var ctx = document.getElementById("top3Sales").getContext('2d');
+    new Chart(ctx, {
         type: 'bar',
         data: {
             labels: labelArr,
             datasets: [{
-                label: '등록된 물품 수 Top 3',
+                label: '판매왕 Top 3',
                 data: countArr,
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
@@ -179,17 +250,62 @@ function drawTop3SalesChart(productList) {
 }
 
 function drawTop3DonationChart(productList) {
-    // var productMap = {}
-    // productList.forEach((product) => {
-    //     const part = product.seller.part
-    //     if (productMap[part] === undefined) {
-    //         productMap[part] = 1;
-    //     } else {
-    //         productMap[part] += 1;
-    //     }
-    // })
+    var donationList = []
+    productList.forEach((product) => {
+        if (!product.onSale) {
+            var part = product.seller.part
+            var p = donationList.find(element => {
+                return element.part == part
+            })
 
-    // console.log(JSON.stringify(productMap));
+            if (p === undefined) {
+                donationList.push({ part: part, donation: product.donation })
+            } else {
+                p.donation += product.donation;
+            }
+        }
+    })
+
+    const top3 = donationList.sort((a, b) => {
+        return b.donation - a.donation
+    }).slice(0, 3)
+
+    const labelArr = top3.map(value => value.part)
+    const donationArr = top3.map(value => value.donation)
+
+    var ctx = document.getElementById("top3Donation").getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labelArr,
+            datasets: [{
+                label: '기부왕 Top 3',
+                data: donationArr,
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(54, 162, 235, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255,99,132,1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(54, 162, 235, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: false,
+            maintainAspectRatio: false,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
 }
 
 
