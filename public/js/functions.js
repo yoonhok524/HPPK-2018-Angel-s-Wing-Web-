@@ -214,7 +214,7 @@ function drawProductRegisterChart(productList) {
 
 function drawTop5SalesChart(productList) {
     const salesList = []
-    productList.filter(product => product.onSale)
+    productList.filter(product => !product.onSale)
         .forEach((product) => {
             const part = product.seller.part
             const p = salesList.find(element => {
