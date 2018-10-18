@@ -12,6 +12,18 @@ const settings = {/* your settings... */ timestampsInSnapshots: true };
 firestore.settings(settings);
 const storage = firebase.storage();
 
+const chartOption = {
+    responsive: false,
+    maintainAspectRatio: false,
+    scales: {
+        yAxes: [{
+            ticks: {
+                beginAtZero: true
+            }
+        }]
+    }
+}
+
 getProducts();
 
 function removeAllChild(doc) {
@@ -97,7 +109,6 @@ function getProducts() {
             storage.ref(product.imgFileName).getDownloadURL().then(function (url) {
                 productImg.src = url;
             }).catch(function (error) {
-                // https://firebase.google.com/docs/storage/web/handle-errors
                 switch (error.code) {
                     case 'storage/object_not_found':
                         break;
@@ -111,10 +122,10 @@ function getProducts() {
             });
         });
 
-        $('#productSize').text("총 "+productList.length+"개의 물품이 등록되었습니다!");
+        $('#productSize').text("총 " + productList.length + "개의 물품이 등록되었습니다!");
         drawProductRegisterChart(productList);
-        drawTop3SalesChart(productList);
-        drawTop3DonationChart(productList);
+        drawTop5SalesChart(productList);
+        drawTop5DonationChart(productList);
     });
 }
 
@@ -153,6 +164,27 @@ function drawProductRegisterChart(productList) {
                 label: '물품 등록 현황',
                 data: countArr,
                 backgroundColor: [
+                    '#d5000099',
+                    '#c5116299',
+                    '#aa00ff99',
+                    '#512da899',
+                    '#303f9f99',
+                    '#1976d299',
+                    '#0288d199',
+                    '#0097a799',
+                    '#00796b99',
+                    '#388e3c99',
+                    '#64dd1799',
+                    '#aeea0099',
+                    '#ffd60099',
+                    '#ffab0099',
+                    '#f57c0099',
+                    '#e64a1999',
+                    '#79554899',
+                    '#9e9e9e99',
+                    '#607d8b99'
+                ],
+                borderColor: [
                     '#d50000',
                     '#c51162',
                     '#aa00ff',
@@ -176,26 +208,16 @@ function drawProductRegisterChart(productList) {
                 borderWidth: 1
             }]
         },
-        options: {
-            responsive: false,
-            maintainAspectRatio: false,
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
-        }
+        options: chartOption
     });
 }
 
-function drawTop3SalesChart(productList) {
-    var salesList = []
-    productList.forEach((product) => {
-        if (!product.onSale) {
-            var part = product.seller.part
-            var p = salesList.find(element => {
+function drawTop5SalesChart(productList) {
+    const salesList = []
+    productList.filter(product => product.onSale)
+        .forEach((product) => {
+            const part = product.seller.part
+            const p = salesList.find(element => {
                 return element.part == part
             })
 
@@ -204,57 +226,24 @@ function drawTop3SalesChart(productList) {
             } else {
                 p.count++;
             }
-        }
-    })
+        })
 
-    const top3 = salesList.sort((a, b) => {
+    const top5 = salesList.sort((a, b) => {
         return b.count - a.count
-    }).slice(0, 3)
+    }).slice(0, 5)
 
-    const labelArr = top3.map(value => value.part)
-    const countArr = top3.map(value => value.count)
+    const labelArr = top5.map(value => value.part)
+    const countArr = top5.map(value => value.count)
 
-    var ctx = document.getElementById("top3Sales").getContext('2d');
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: labelArr,
-            datasets: [{
-                label: '판매왕 Top 3',
-                data: countArr,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(54, 162, 235, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255,99,132,1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(54, 162, 235, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: false,
-            maintainAspectRatio: false,
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
-        }
-    });
+    drawChart("top3Sales", "판매 금액", labelArr, countArr);
 }
 
-function drawTop3DonationChart(productList) {
-    var donationList = []
-    productList.forEach((product) => {
-        if (!product.onSale) {
-            var part = product.seller.part
-            var p = donationList.find(element => {
+function drawTop5DonationChart(productList) {
+    const donationList = []
+    productList.filter(product => !product.onSale)
+        .forEach((product) => {
+            const part = product.seller.part
+            const p = donationList.find(element => {
                 return element.part == part
             })
 
@@ -263,52 +252,47 @@ function drawTop3DonationChart(productList) {
             } else {
                 p.donation += product.donation;
             }
-        }
-    })
+        })
 
-    const top3 = donationList.sort((a, b) => {
+    const top5 = donationList.sort((a, b) => {
         return b.donation - a.donation
-    }).slice(0, 3)
+    }).slice(0, 5)
 
-    const labelArr = top3.map(value => value.part)
-    const donationArr = top3.map(value => value.donation)
+    const labelArr = top5.map(value => value.part)
+    const donationArr = top5.map(value => value.donation)
 
-    var ctx = document.getElementById("top3Donation").getContext('2d');
+    drawChart("top3Donation", "기부 금액", labelArr, donationArr);
+}
+
+function drawChart(chartId, label, labelArr, valueArr) {
+    var ctx = document.getElementById(chartId).getContext('2d');
     new Chart(ctx, {
         type: 'bar',
         data: {
             labels: labelArr,
             datasets: [{
-                label: '기부왕 Top 3',
-                data: donationArr,
+                label: label,
+                data: valueArr,
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
                     'rgba(75, 192, 192, 0.2)',
-                    'rgba(54, 162, 235, 0.2)'
+                    'rgba(153, 102, 255, 0.2)'
                 ],
                 borderColor: [
                     'rgba(255,99,132,1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
                     'rgba(75, 192, 192, 1)',
-                    'rgba(54, 162, 235, 1)'
+                    'rgba(153, 102, 255, 1)'
                 ],
                 borderWidth: 1
             }]
         },
-        options: {
-            responsive: false,
-            maintainAspectRatio: false,
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
-        }
+        options: chartOption
     });
 }
-
-
 
 function getLocation(part) {
     switch (part) {
